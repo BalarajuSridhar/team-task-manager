@@ -6,28 +6,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Navbar – brand lives only here */}
-      <nav className="container mx-auto px-6 py-5 flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-2 group">
-          <HiOutlineClipboardList className="text-3xl text-indigo-600 dark:text-indigo-400 group-hover:scale-105 transition" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            TaskFlow
-          </span>
-        </Link>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/login"
-            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
-          >
-            Sign In
-          </Link>
-          <Link
-            to="/register"
-            className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 shadow-sm hover:shadow transition-all"
-          >
-            Get Started
-          </Link>
-        </div>
-      </nav>
+
 
       {/* Hero – no brand name here */}
       <div className="flex-1 container mx-auto px-6 flex flex-col lg:flex-row items-center justify-center gap-16 py-20">

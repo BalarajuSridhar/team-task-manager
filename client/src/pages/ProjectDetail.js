@@ -6,11 +6,12 @@ import TaskForm from '../components/TaskForm';
 import TaskCard from '../components/TaskCard';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import toast from 'react-hot-toast';
+import { HiArrowLeft, HiViewGrid, HiViewList, HiUserAdd, HiX } from 'react-icons/hi';
 
 const columns = {
-  TODO: { title: 'To Do', color: 'bg-gray-200 dark:bg-gray-700' },
-  IN_PROGRESS: { title: 'In Progress', color: 'bg-blue-200 dark:bg-blue-900' },
-  DONE: { title: 'Done', color: 'bg-green-200 dark:bg-green-900' },
+  TODO: { title: 'To Do', color: 'bg-gray-200 dark:bg-gray-700', textColor: 'text-gray-800 dark:text-gray-200' },
+  IN_PROGRESS: { title: 'In Progress', color: 'bg-blue-200 dark:bg-blue-900', textColor: 'text-blue-800 dark:text-blue-200' },
+  DONE: { title: 'Done', color: 'bg-green-200 dark:bg-green-900', textColor: 'text-green-800 dark:text-green-200' },
 };
 
 const ProjectDetail = () => {
@@ -19,7 +20,7 @@ const ProjectDetail = () => {
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState('kanban'); // kanban or list
+  const [view, setView] = useState('kanban');
   const [allUsers, setAllUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
 
@@ -47,19 +48,16 @@ const ProjectDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    if (user?.role === 'ADMIN') {
-      fetchUsers();
-    }
+    if (user?.role === 'ADMIN') fetchUsers();
   }, [user]);
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
     if (!destination || destination.droppableId === source.droppableId) return;
 
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === draggableId) return { ...task, status: destination.droppableId };
-      return task;
-    });
+    const updatedTasks = tasks.map((task) =>
+      task.id === draggableId ? { ...task, status: destination.droppableId } : task
+    );
     setTasks(updatedTasks);
 
     try {
@@ -67,17 +65,7 @@ const ProjectDetail = () => {
       toast.success('Task moved');
     } catch (err) {
       toast.error('Failed to update task');
-      fetchProject(); // rollback
-    }
-  };
-
-  const handleStatusChange = async (taskId, newStatus) => {
-    try {
-      await api.put(`/tasks/${taskId}`, { status: newStatus });
-      toast.success('Status updated');
       fetchProject();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Error updating task');
     }
   };
 
@@ -104,103 +92,130 @@ const ProjectDetail = () => {
     }
   };
 
-  if (loading) return <div className="text-center mt-20 text-xl">Loading...</div>;
-  if (!project) return <div className="text-center mt-20 text-xl">Project not found</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
 
-  // Only show users not already in project
+  if (!project) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <p className="text-xl text-gray-500">Project not found</p>
+        <Link to="/projects" className="btn-primary mt-4 inline-flex">Back to Projects</Link>
+      </div>
+    );
+  }
+
   const projectMemberIds = project.members.map((m) => m.userId);
   const availableUsers = allUsers.filter((u) => !projectMemberIds.includes(u.id));
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <Link to="/projects" className="text-indigo-500 hover:underline text-sm">← Back to Projects</Link>
-          <h1 className="text-3xl font-bold mt-1">{project.name}</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div className="flex items-center gap-4">
+          <Link to="/projects" className="btn-ghost p-2 rounded-lg">
+            <HiArrowLeft className="text-xl" />
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{project.name}</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
+              {tasks.length} task{tasks.length !== 1 && 's'} • {project.members.length} member{project.members.length !== 1 && 's'}
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setView('kanban')}
-            className={`px-4 py-2 rounded-full text-sm ${view === 'kanban' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            className={`btn ${view === 'kanban' ? 'btn-primary' : 'btn-secondary'}`}
           >
-            Kanban
+            <HiViewGrid className="text-lg" /> Kanban
           </button>
           <button
             onClick={() => setView('list')}
-            className={`px-4 py-2 rounded-full text-sm ${view === 'list' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            className={`btn ${view === 'list' ? 'btn-primary' : 'btn-secondary'}`}
           >
-            List
+            <HiViewList className="text-lg" /> List
           </button>
         </div>
       </div>
 
+      {/* Team Members (Admin only) */}
       {user.role === 'ADMIN' && (
-        <div className="mb-8 glass rounded-2xl p-6">
-          <h2 className="text-xl font-semibold mb-3">Team Members</h2>
-          <ul className="mb-4 space-y-1">
+        <div className="card p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Team Members</h2>
+          <div className="space-y-2 mb-4">
             {project.members.map((m) => (
-              <li key={m.userId} className="flex justify-between items-center py-1">
-                <span className="flex items-center gap-2">
-                  <span className="font-medium">{m.user.name}</span>
-                  <span className="text-sm text-gray-500">{m.user.email}</span>
+              <div key={m.userId} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">{m.user.name.charAt(0)}</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm text-gray-900 dark:text-white">{m.user.name}</p>
+                    <p className="text-xs text-gray-500">{m.user.email}</p>
+                  </div>
                   {m.role === 'ADMIN' && (
-                    <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">Admin</span>
+                    <span className="badge bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400">
+                      Admin
+                    </span>
                   )}
-                </span>
+                </div>
                 {m.role !== 'ADMIN' && (
                   <button
                     onClick={() => handleRemoveMember(m.userId)}
-                    className="text-red-500 text-sm hover:underline"
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                   >
-                    Remove
+                    <HiX className="text-lg" />
                   </button>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
-
-          {/* Add member form with user dropdown */}
-          <form onSubmit={handleAddMember} className="flex gap-2 items-end">
-            <div className="flex-1">
-              <label className="block text-sm mb-1 text-gray-500">Add a member</label>
-              <select
-                value={selectedUserId}
-                onChange={(e) => setSelectedUserId(e.target.value)}
-                className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800"
-                required
-              >
-                <option value="">-- Select user --</option>
-                {availableUsers.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.name} ({u.email})
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-xl transition"
+          </div>
+          <form onSubmit={handleAddMember} className="flex gap-3">
+            <select
+              value={selectedUserId}
+              onChange={(e) => setSelectedUserId(e.target.value)}
+              className="input flex-1"
+              required
             >
-              Add
+              <option value="">Select a user to add...</option>
+              {availableUsers.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name} ({u.email})
+                </option>
+              ))}
+            </select>
+            <button type="submit" className="btn-primary">
+              <HiUserAdd className="text-lg" /> Add
             </button>
           </form>
         </div>
       )}
 
+      {/* Task Form (Admin only) */}
       {user.role === 'ADMIN' && (
         <TaskForm projectId={id} members={project.members} onTaskCreated={fetchProject} />
       )}
 
+      {/* Kanban or List view */}
       {view === 'kanban' ? (
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
             {Object.entries(columns).map(([status, col]) => (
               <Droppable droppableId={status} key={status}>
                 {(provided) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps} className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4">
-                    <h3 className={`text-lg font-semibold mb-3 px-3 py-1 rounded-full inline-block ${col.color}`}>
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-4"
+                  >
+                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-4 ${col.color} ${col.textColor}`}>
                       {col.title} ({tasks.filter((t) => t.status === status).length})
-                    </h3>
+                    </div>
                     <div className="space-y-3 min-h-[200px]">
                       {tasks
                         .filter((t) => t.status === status)
@@ -218,51 +233,40 @@ const ProjectDetail = () => {
           </div>
         </DragDropContext>
       ) : (
-        <div className="glass rounded-2xl p-6 overflow-x-auto">
+        <div className="card overflow-x-auto mt-6">
           <table className="w-full">
             <thead>
               <tr className="border-b dark:border-gray-700">
-                <th className="text-left p-2">Title</th>
-                <th className="text-left p-2">Priority</th>
-                <th className="text-left p-2">Status</th>
-                <th className="text-left p-2">Assignee</th>
-                <th className="text-left p-2">Due</th>
-                <th className="text-left p-2">Action</th>
+                <th className="text-left p-4 font-medium text-gray-500">Task</th>
+                <th className="text-left p-4 font-medium text-gray-500">Priority</th>
+                <th className="text-left p-4 font-medium text-gray-500">Status</th>
+                <th className="text-left p-4 font-medium text-gray-500">Assignee</th>
+                <th className="text-left p-4 font-medium text-gray-500">Due Date</th>
               </tr>
             </thead>
             <tbody>
               {tasks.map((task) => (
-                <tr key={task.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-                  <td className="p-2">{task.title}</td>
-                  <td className="p-2">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        task.priority === 'HIGH' ? 'bg-red-100 text-red-800' :
-                        task.priority === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
-                      }`}
-                    >
-                      {task.priority}
+                <tr key={task.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <td className="p-4 font-medium text-gray-900 dark:text-white">{task.title}</td>
+                  <td className="p-4">
+                    <span className={`badge-${task.priority.toLowerCase()}`}>{task.priority}</span>
+                  </td>
+                  <td className="p-4">
+                    <span className={`badge-${task.status === 'TODO' ? 'todo' : task.status === 'IN_PROGRESS' ? 'progress' : 'done'}`}>
+                      {task.status.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="p-2">{task.status.replace('_', ' ')}</td>
-                  <td className="p-2">{task.assignee?.name || '-'}</td>
-                  <td className="p-2 text-sm">{task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '-'}</td>
-                  <td className="p-2">
-                    {(user.role === 'ADMIN' || task.assignedTo === user.id) && (
-                      <select
-                        value={task.status}
-                        onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                        className="border rounded p-1 text-sm dark:bg-gray-700"
-                      >
-                        <option value="TODO">TODO</option>
-                        <option value="IN_PROGRESS">IN PROGRESS</option>
-                        <option value="DONE">DONE</option>
-                      </select>
-                    )}
+                  <td className="p-4 text-sm text-gray-500">{task.assignee?.name || 'Unassigned'}</td>
+                  <td className="p-4 text-sm text-gray-500">
+                    {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '-'}
                   </td>
                 </tr>
               ))}
+              {tasks.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-8 text-center text-gray-400">No tasks yet</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
