@@ -6,7 +6,28 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Nav */}
-      
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-lg">T</span>
+          </div>
+          <span className="text-xl font-bold text-gray-900 dark:text-white">TaskFlow</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/login"
+            className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/register"
+            className="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors shadow-sm"
+          >
+            Get Started
+          </Link>
+        </div>
+      </nav>
 
       {/* Hero */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">

@@ -90,3 +90,13 @@
 .badge-done {
   @apply badge bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
 }
+
+/* Sidebar link active state */
+.sidebar-link.active {
+  @apply bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium;
+}
+
+/* Prevent body scroll when sidebar is open on mobile */
+body.sidebar-open {
+  overflow: hidden;
+}

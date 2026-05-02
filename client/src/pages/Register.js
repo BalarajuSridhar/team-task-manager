@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { HiUser, HiMail, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
+import { HiUser, HiMail, HiLockClosed, HiEye, HiEyeOff, HiArrowLeft } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 
 const Register = () => {
@@ -17,7 +17,7 @@ const Register = () => {
     e.preventDefault();
     try {
       await register(name, email, password);
-      toast.success('Account created!');
+      toast.success('Account created successfully!');
       navigate('/');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
@@ -25,94 +25,102 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="w-full max-w-sm"
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md"
       >
-        {/* Brand logo */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            TaskFlow
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Create your free account</p>
+        {/* Back Button */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors"
+        >
+          <HiArrowLeft className="text-lg" />
+          Back to Home
+        </Link>
+
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-xl">T</span>
+            </div>
+          </Link>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Get started</h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Create your free account</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
               <div className="relative">
-                <HiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <HiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
                 <input
                   type="text"
                   placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm"
+                  className="input input-icon"
                 />
               </div>
             </div>
 
-            {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
               <div className="relative">
-                <HiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <HiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
                 <input
                   type="email"
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm"
+                  className="input input-icon"
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
               <div className="relative">
-                <HiLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <HiLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Min. 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-10 pr-12 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm"
+                  className="input input-icon pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
-                  tabIndex="-1"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  tabIndex={-1}
                 >
-                  {showPassword ? <HiEyeOff className="text-lg" /> : <HiEye className="text-lg" />}
+                  {showPassword ? <HiEyeOff className="text-xl" /> : <HiEye className="text-xl" />}
                 </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md text-sm"
-            >
+            <button type="submit" className="btn-primary w-full py-3 text-base">
               Create Account
             </button>
           </form>
 
-          <p className="mt-5 text-center text-xs text-gray-500 dark:text-gray-400">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-600 hover:underline font-medium">
-              Sign in
-            </Link>
-          </p>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Already have an account?{' '}
+              <Link to="/login" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </div>
         </div>
       </motion.div>
     </div>
