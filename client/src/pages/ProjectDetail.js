@@ -8,14 +8,13 @@ import TaskModal from '../components/TaskModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import toast from 'react-hot-toast';
-
 import {
   HiArrowLeft,
   HiViewGrid,
   HiViewList,
   HiUserAdd,
   HiX,
-  HiSerach,
+  HiSearch,
   HiUsers,
   HiClipboardList,
 } from 'react-icons/hi';
@@ -41,7 +40,6 @@ const ProjectDetail = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState(null);
 
-  // Fetch project data
   const fetchProject = async () => {
     try {
       const res = await api.get(`/projects/${id}`);
@@ -54,7 +52,6 @@ const ProjectDetail = () => {
     }
   };
 
-  // Fetch all users (admin only)
   const fetchUsers = async () => {
     try {
       const res = await api.get('/auth/users');
@@ -70,7 +67,6 @@ const ProjectDetail = () => {
     if (user?.role === 'ADMIN') fetchUsers();
   }, [user]);
 
-  // Drag and drop handler
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
     if (!destination || destination.droppableId === source.droppableId) return;
@@ -85,11 +81,10 @@ const ProjectDetail = () => {
       toast.success('Task moved');
     } catch (err) {
       toast.error('Failed to update task');
-      fetchProject(); // Revert on error
+      fetchProject();
     }
   };
 
-  // Add member
   const handleAddMember = async (e) => {
     e.preventDefault();
     if (!selectedUserId) return;
@@ -103,7 +98,6 @@ const ProjectDetail = () => {
     }
   };
 
-  // Remove member
   const handleRemoveMember = async (userId) => {
     try {
       await api.delete(`/projects/${id}/members/${userId}`);
@@ -114,7 +108,6 @@ const ProjectDetail = () => {
     }
   };
 
-  // Filter tasks by search query
   const filteredTasks = tasks.filter((task) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -127,7 +120,6 @@ const ProjectDetail = () => {
     );
   });
 
-  // Loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center h-96">
@@ -139,7 +131,6 @@ const ProjectDetail = () => {
     );
   }
 
-  // Not found state
   if (!project) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
@@ -153,7 +144,6 @@ const ProjectDetail = () => {
     );
   }
 
-  // Available users (not already in project)
   const projectMemberIds = project.members.map((m) => m.userId);
   const availableUsers = allUsers.filter((u) => !projectMemberIds.includes(u.id));
 
@@ -252,7 +242,6 @@ const ProjectDetail = () => {
             </div>
           )}
 
-          {/* Add member form */}
           {availableUsers.length > 0 ? (
             <form onSubmit={handleAddMember} className="flex gap-3">
               <select
@@ -288,7 +277,7 @@ const ProjectDetail = () => {
       {/* Search Bar */}
       {tasks.length > 0 && (
         <div className="relative mb-6">
-          <HiMagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+          <HiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
           <input
             type="text"
             placeholder="Search tasks by title, priority, status, or assignee..."
@@ -307,7 +296,7 @@ const ProjectDetail = () => {
         </div>
       )}
 
-      {/* Kanban or List view */}
+      {/* Empty state */}
       {filteredTasks.length === 0 && !loading ? (
         <div className="text-center py-16">
           <HiClipboardList className="text-5xl text-gray-300 dark:text-gray-600 mx-auto mb-4" />
@@ -328,6 +317,7 @@ const ProjectDetail = () => {
           )}
         </div>
       ) : view === 'kanban' ? (
+        /* Kanban View */
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {Object.entries(columns).map(([status, col]) => {
@@ -385,6 +375,7 @@ const ProjectDetail = () => {
           </div>
         </DragDropContext>
       ) : (
+        /* List View */
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
