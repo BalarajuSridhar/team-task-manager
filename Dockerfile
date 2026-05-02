@@ -24,5 +24,8 @@ EXPOSE 5000
 # Set environment variable
 ENV NODE_ENV=production
 
+# Set working directory to server
+WORKDIR /app/server
+
 # Run migrations, seed admin, and start server
-CMD cd server && npx prisma migrate deploy && node seed.js && node index.js
+CMD ["sh", "-c", "npx prisma migrate deploy && node seed.js && node index.js"]
