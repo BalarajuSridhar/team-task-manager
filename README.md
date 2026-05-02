@@ -3,9 +3,9 @@
 A modern, full‑stack web application for team project management with role‑based access, drag-and-drop Kanban boards, real‑time dashboards, and dark mode.
 Built with React, Express, PostgreSQL, and Prisma.
 
-🔗 **Live Demo:** [https://taskflow.up.railway.app](https://taskflow.up.railway.app) *(replace with your actual Railway URL)*
+🔗 **Live Demo:** [https://taskflow.up.railway.app](https://team-task-manager-production-e1884.up.railway.app/).
 
-![TaskFlow Dashboard](https://via.placeholder.com/1200x600?text=TaskFlow+Preview)
+
 
 ---
 
