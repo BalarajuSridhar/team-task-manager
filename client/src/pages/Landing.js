@@ -1,70 +1,107 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { HiArrowRight, HiOutlineClipboardList } from 'react-icons/hi';
+import { HiArrowRight, HiShieldCheck, HiUsers, HiChartBar } from 'react-icons/hi';
 
 const Landing = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      {/* Navbar – brand lives only here */}
+    <div className="min-h-screen bg-white dark:bg-gray-950">
+      {/* Nav */}
+      
 
+      {/* Hero */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-full mb-6">
+              <span className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></span>
+              <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">Now with Kanban boards</span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight">
+              Manage teams,{' '}
+              <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                ship projects
+              </span>
+            </h1>
+            <p className="mt-6 text-lg text-gray-500 dark:text-gray-400 max-w-lg leading-relaxed">
+              Assign tasks, track progress with drag‑and‑drop Kanban boards, and collaborate with role‑based access. Everything a modern team needs — beautifully simple.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <Link
+                to="/register"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-95"
+              >
+                Start for free <HiArrowRight className="text-lg" />
+              </Link>
+              <Link
+                to="/login"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-base font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors"
+              >
+                I have an account
+              </Link>
+            </div>
+            <div className="mt-8 flex items-center gap-6 text-sm text-gray-400">
+              <span className="flex items-center gap-1"><HiShieldCheck className="text-green-500" /> Secure</span>
+              <span className="flex items-center gap-1"><HiUsers className="text-blue-500" /> Team ready</span>
+              <span className="flex items-center gap-1"><HiChartBar className="text-purple-500" /> Analytics</span>
+            </div>
+          </motion.div>
 
-      {/* Hero – no brand name here */}
-      <div className="flex-1 container mx-auto px-6 flex flex-col lg:flex-row items-center justify-center gap-16 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex-1 text-center lg:text-left max-w-lg"
-        >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-            Manage teams,<br />
-            <span className="text-indigo-600 dark:text-indigo-400">ship projects</span>
-          </h2>
-          <p className="mt-6 text-lg text-gray-500 dark:text-gray-400 max-w-md mx-auto lg:mx-0">
-            Assign tasks, track progress, and collaborate with role‑based access. Everything a modern team needs — beautifully simple.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all"
-            >
-              Start for free <HiArrowRight />
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-            >
-              I have an account
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Illustration */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex-1 flex justify-center"
-        >
-          <div className="relative w-72 h-72 md:w-96 md:h-96">
-            <div className="absolute inset-0 bg-indigo-100 dark:bg-indigo-900/30 rounded-full blur-3xl opacity-50" />
-            <svg viewBox="0 0 200 200" className="relative w-full h-full drop-shadow-xl">
-              <rect x="40" y="35" width="120" height="130" rx="12" fill="white" stroke="#e5e7eb" strokeWidth="2" />
-              <rect x="60" y="50" width="80" height="8" rx="4" fill="#6366f1" />
-              <circle cx="160" cy="135" r="16" fill="#34d399" opacity="0.9" />
-              <path d="M154 135 L158 139 L166 131" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-              <rect x="60" y="70" width="90" height="6" rx="3" fill="#e0e7ff" />
-              <rect x="60" y="85" width="75" height="6" rx="3" fill="#e0e7ff" />
-              <rect x="60" y="100" width="85" height="6" rx="3" fill="#e0e7ff" />
-              <circle cx="170" cy="45" r="10" fill="#f59e0b" />
-              <path d="M166 49 L170 43 L174 49" stroke="white" strokeWidth="2" fill="none" />
-            </svg>
-          </div>
-        </motion.div>
-      </div>
-
-      <div className="py-6 text-center text-sm text-gray-400 dark:text-gray-600">
-        Built with ❤️ · Secure · No credit card required
+          {/* Right - Illustration */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex justify-center"
+          >
+            <div className="relative w-full max-w-md">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-3xl blur-2xl" />
+              <div className="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 p-8">
+                {/* Mini Kanban */}
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <div className="w-20 h-2 bg-indigo-600 rounded-full mb-2"></div>
+                    <div className="w-14 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                  </div>
+                  <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <span className="text-green-600 text-lg">✓</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-2">
+                    <div className="text-xs font-medium text-gray-400 mb-2">To Do</div>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-3">
+                      <div className="w-full h-2 bg-indigo-200 dark:bg-indigo-800 rounded-full mb-2"></div>
+                      <div className="w-3/4 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-3">
+                      <div className="w-full h-2 bg-orange-200 dark:bg-orange-800 rounded-full mb-2"></div>
+                      <div className="w-1/2 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-xs font-medium text-gray-400 mb-2">Doing</div>
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-3 border border-blue-100 dark:border-blue-800">
+                      <div className="w-full h-2 bg-blue-300 dark:bg-blue-600 rounded-full mb-2"></div>
+                      <div className="w-2/3 h-2 bg-blue-100 dark:bg-blue-800 rounded-full"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-xs font-medium text-gray-400 mb-2">Done</div>
+                    <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-3 border border-green-100 dark:border-green-800">
+                      <div className="w-full h-2 bg-green-300 dark:bg-green-600 rounded-full mb-2"></div>
+                      <div className="w-1/2 h-2 bg-green-100 dark:bg-green-800 rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
