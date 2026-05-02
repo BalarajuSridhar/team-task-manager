@@ -2,30 +2,29 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install server dependencies first
-COPY server/package*.json ./server/
-RUN cd server && npm install
+# Copy everything from the root first
+COPY . .
 
-# Copy server code
-COPY server/ ./server/
+# Install server dependencies
+WORKDIR /app/server
+RUN npm install
 
 # Generate Prisma client
-RUN cd server && npx prisma generate
+RUN npx prisma generate
 
 # Install client dependencies and build React app
-COPY client/package*.json ./client/
-RUN cd client && npm install
-COPY client/ ./client/
-RUN cd client && npm run build
+WORKDIR /app/client
+RUN npm install
+RUN npm run build
 
-# Expose port 5000
-EXPOSE 5000
-
-# Set environment variable
-ENV NODE_ENV=production
-
-# Set working directory to server
+# Go back to server directory for running
 WORKDIR /app/server
 
-# Run migrations, seed admin, and start server
+# Expose port
+EXPOSE 5000
+
+# Set environment
+ENV NODE_ENV=production
+
+# Run migrations, seed, and start
 CMD ["sh", "-c", "npx prisma migrate deploy && node seed.js && node index.js"]
